@@ -1,9 +1,18 @@
+/**
+ * [gulp scaffold by cmcm]
+ * author: cmcm
+ * mail: cmcmus@icloud.com
+ * @type {[type]}
+ */
 var gulp = require('gulp'),
     webserver = require('gulp-webserver'),
     livereload = require('gulp-livereload'),
     sass = require('gulp-sass'),
     minifycss = require('gulp-minify-css'),
+    rename = require('gulp-rename'),
     notify = require('gulp-notify'),
+    concat = require('gulp-concat'),
+    uglify = require('gulp-uglify'),
     del = require('del');
 
 gulp.task('images', function(){
@@ -13,7 +22,6 @@ gulp.task('images', function(){
 });
 
 gulp.task('html', function(){
-
   gulp.src('src/*.html')
     .pipe(gulp.dest('dist/'))
     .pipe(livereload())
@@ -21,10 +29,9 @@ gulp.task('html', function(){
 });
 
 gulp.task('css', function(){
-  console.log('css....');
   return gulp.src('src/css/*.scss')
     .pipe(sass.sync().on('error', sass.logError))
-    // .pipe(rename({ suffix: '.min' }))
+    .pipe(rename({ suffix: '.min' }))
     .pipe(minifycss())
     .pipe(gulp.dest('dist/css'))
     .pipe(gulp.dest('src/css'))
@@ -34,9 +41,9 @@ gulp.task('css', function(){
 
 gulp.task('js', function() {
   return gulp.src('src/js/**/*.js')
-    // .pipe(concat('main.js'))
-    // .pipe(uglify())
-    // .pipe(rename({ suffix: '.min' }))
+    .pipe(concat('main.js'))
+    .pipe(uglify())
+    .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest('dist/js'))
     .on('error', function(error){
       gutil.log(error)
@@ -85,10 +92,6 @@ gulp.task('clean', function(cb) {
 gulp.task('build', function() {
   gulp.start('images','html', 'css',  'js', 'fonts', 'nodes');
 });
-
-gulp.task('test', function(){
-  gulp.start('hello');
-})
 
 gulp.task('hello', function(){
   console.log('hello gulp....')
